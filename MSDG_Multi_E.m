@@ -1,7 +1,7 @@
 %%=====My Multi source domain generalizaiton method___ Multi--A======%%
-%clear;clc;
+clear;clc;
 close all
-
+%tic
 
 %%=====1. Load data=======%%
 % load the domain A/B/C/D/E/F/G/H 
@@ -83,7 +83,6 @@ for i = 1:length(md)
     TrainingLabel = [cell2mat(all_labels)]';%,LabelT
     
     %%======SVM classification model=======%%
-    %%======SVM classification model=======%%
     bestc = 1;
     % RBF Kernel （应用RBF核函数实现2分类问题支持向量机的训练）
     options=['-s 0 -t 2 ',' -c ',num2str(bestc)];
@@ -92,23 +91,16 @@ for i = 1:length(md)
      model_RBF3 = svmtrain(all_labels{3}',mapped_trainS{3}', options);
      model_RBF4 = svmtrain(all_labels{4}',mapped_trainS{4}', options);
            model_RBF = svmtrain(TrainingLabel,TrainingData, options);
-            model_RBF = svmtrain(TrainingLabel,TrainingData, options);
-        mmd_XY1=my_mmd(E,A,33);
-           mmd_XY2=my_mmd(E,B,33);
-           mmd_XY3=my_mmd(E,C,33);
-           mmd_XY4=my_mmd(E,D,33);     
-% %             mmd_XY5=my_mmd(mapped_TestData,mapped_trainT',R);
-           values=Untitled5(mmd_XY1,mmd_XY2,mmd_XY3,mmd_XY4,0.01);
-%  [label1,score1] = predict(model_RBF1,mapped_TestData);
+        mmd_XY1=my_mmd(A,E,2);
+           mmd_XY2=my_mmd(A,F,2);
+           mmd_XY3=my_mmd(A,G,2);
+           mmd_XY4=my_mmd(A,H,2);  
+           values=Untitled5(mmd_XY1,mmd_XY2,mmd_XY3,mmd_XY4,MMD);
     [predict_label_L, accuracy_L, dec_values_L5] = svmpredict(TestLabel, mapped_TestData, model_RBF,'-b 0');
     [predict_label_L1, accuracy_L1, dec_values_L1] = svmpredict(TestLabel, mapped_TestData, model_RBF1,'-b 0');
     [predict_label_L2, accuracy_L2, dec_values_L2] = svmpredict(TestLabel, mapped_TestData, model_RBF2,'-b 0');
     [predict_label_L3, accuracy_L3, dec_values_L3] = svmpredict(TestLabel, mapped_TestData, model_RBF3,'-b 0');
     [predict_label_L4, accuracy_L4, dec_values_L4] = svmpredict(TestLabel, mapped_TestData, model_RBF4,'-b 0');
-% 最终预测标签为k*1矩阵,k为预测样本的个数
-% 求出测试样本在5个模型中预测为“正”得分的最大值，作为该测试样本的最终预测标签
-% score = [values(1).*dec_values_L1(:,6),values(2).*dec_values_L2(:,6),1.75*values(3).*dec_values_L3(:,6),1*values(4).*dec_values_L4(:,6)];
-% 最终预测标签为k*1矩阵,k为预测样本的个数
 predict_label=[predict_label_L1,predict_label_L2,predict_label_L3,predict_label_L4];
 votes=vote(values,predict_label);
 
@@ -131,6 +123,8 @@ end
 end
 max(max(Result))
 max(R4T1)
-%   save (filename);
-%  clear;clc;
-% end
+
+% %代码块
+% save (filename);
+% toc
+% disp(['运行时间: ',num2str(toc)]); 
